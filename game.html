@@ -1,0 +1,173 @@
+<html>
+<head>
+  <style>
+    /* Define some basic styles for the elements */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: lightblue;
+    }
+
+    h1 {
+      text-align: center;
+      color: white;
+    }
+
+    #game {
+      width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #message {
+      font-size: 24px;
+      font-weight: bold;
+      color: green;
+    }
+
+    #guess {
+      width: 100px;
+      height: 40px;
+      font-size: 24px;
+    }
+
+    #submit {
+      width: 100px;
+      height: 40px;
+      font-size: 24px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #submit:hover {
+      background-color: darkgreen;
+    }
+
+    #submit:disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+
+    #hint {
+      font-size: 18px;
+      color: red;
+    }
+
+    /* Define some keyframes for the animations */
+    @keyframes bounce {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-10px);
+      }
+      50% {
+        transform: translateX(10px);
+      }
+      75% {
+        transform: translateX(-10px);
+      }
+      100% {
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Guessing Game</h1>
+  <div id="game">
+    <p id="message">Enter a number between 1 and 100</p>
+    <input id="guess" type="number" min="1" max="100" />
+    <button id="submit">Guess</button>
+    <p id="hint"></p>
+  </div>
+  <script>
+    // Get the elements from the document
+    let message = document.getElementById("message");
+    let guess = document.getElementById("guess");
+    let submit = document.getElementById("submit");
+    let hint = document.getElementById("hint");
+
+    // Generate a random number between 1 and 100
+    let secret = Math.floor(Math.random() * 100) + 1;
+
+    // Set the maximum number of guesses
+    let maxGuesses = 10;
+
+    // Initialize the number of guesses
+    let guesses = 0;
+
+    // Initialize a flag to indicate whether the game is over
+    let gameOver = false;
+
+    // Add a click event listener to the submit button
+    submit.addEventListener("click", function () {
+      // Check if the game is over
+      if (!gameOver) {
+        // Increment the number of guesses
+        guesses++;
+
+        // Get the value of the guess input
+        let value = parseInt(guess.value);
+
+        // Check if the value is valid
+        if (isNaN(value) || value < 1 || value > 100) {
+          // Invalid value, display an error message and reset the input
+          hint.textContent = "Please enter a valid number between 1 and 100.";
+          guess.value = "";
+        } else {
+          // Valid value, check if it is correct
+          if (value === secret) {
+            // Correct value, display a congratulatory message and end the game
+            message.textContent = "You got it! The number was " + secret + ".";
+            hint.textContent = "You took " + guesses + " guesses.";
+            gameOver = true;
+            // Disable the input and button
+            guess.disabled = true;
+            submit.disabled = true;
+            // Add a bounce animation to the message
+            message.style.animation = "bounce 1s infinite";
+          } else if (guesses === maxGuesses) {
+            // Wrong value and no more guesses left, display a losing message and end the game
+            message.textContent = "Sorry, you ran out of guesses. The number was " + secret + ".";
+            hint.textContent = "";
+            gameOver = true;
+            // Disable the input and button
+            guess.disabled = true;
+            submit.disabled = true;
+            // Add a shake animation to the message
+            message.style.animation = "shake 0.5s infinite";
+          } else {
+            // Wrong value and more guesses left, display a hint and continue the game
+            if (value < secret) {
+              hint.textContent = "Too low. Try again.";
+            } else {
+              hint.textContent = "Too high. Try again.";
+            }
+            // Reset the input
+            guess.value = "";
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+ 
